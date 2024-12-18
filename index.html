@@ -1,0 +1,907 @@
+<html><head><base href="/" />
+    <title>MediScript - Prescription Management System</title>
+    <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --success: #27ae60;
+      --danger: #e74c3c;
+      --light: #ecf0f1;
+      --warning: #f1c40f;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+      background: var(--light);
+    }
+    
+    .navbar {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    
+    }
+    .navbar h1{
+        margin-left: 40px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    
+    button {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    button:hover {
+      background: var(--primary);
+    }
+    
+    .patient-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    
+    .success-message {
+      background: var(--success);
+      color: white;
+      padding: 1rem;
+      border-radius: 4px;
+      display: none;
+    }
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stats-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .stats-card h3 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    
+    .stats-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--secondary);
+    }
+    
+    .activity-log {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .log-item {
+      padding: 0.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+    }
+    
+    .log-item:last-child {
+      border-bottom: none;
+    }
+    
+    .log-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 1rem;
+      fill: var(--secondary);
+    }
+    
+    .tab-container {
+      margin-bottom: 1rem;
+    }
+    
+    .tab-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tab-button {
+      padding: 0.5rem 1rem;
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .tab-button.active {
+      border-bottom-color: var(--secondary);
+      font-weight: bold;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .chart-container {
+      height: 300px;
+      margin: 2rem 0;
+    }
+    
+    .inventory-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .inventory-item {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .inventory-level {
+      width: 100%;
+      height: 20px;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+    
+    .inventory-level-fill {
+      height: 100%;
+      background: var(--secondary);
+      transition: width 0.3s ease;
+    }
+    
+    .low-stock {
+      background: var(--danger);
+    }
+    
+    .patient-profile {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+    }
+    
+    .compliance-indicator {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+    
+    .high-compliance {
+      background: var(--success);
+      color: white;
+    }
+    
+    .medium-compliance {
+      background: var(--warning);
+      color: white;
+    }
+    
+    .low-compliance {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .schedule-day {
+      text-align: center;
+      padding: 0.5rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+    
+    .schedule-time {
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    .notification-badge {
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      margin-left: 0.5rem;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .prescription-log {
+      margin-top: 2rem;
+    }
+    
+    .prescription-log .card {
+      margin-bottom: 1rem;
+    }
+    
+    .dose-time {
+      margin-bottom: 0.5rem;
+    }
+    
+    .patient-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    
+    .patient-data-table th {
+      background-color: var(--secondary);
+      color: white;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    
+    .patient-data-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .patient-data-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    
+    .patient-data-table tr:hover {
+      background-color: #e6f2ff;
+    }
+    
+    .prescription-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .prescription-detail {
+      background-color: #f9f9f9;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+    
+    /* Expandable Menu Styles */
+    .menu-toggle {
+        cursor: pointer;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1000;
+    }
+    
+    .menu-toggle .bar {
+        width: 25px;
+        height: 3px;
+        background-color: white;
+        margin: 5px 0;
+        transition: 0.4s;
+    }
+    
+    .side-menu {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        background-color: var(--primary);
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+    
+    .side-menu a {
+        padding: 15px 25px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        transition: 0.3s;
+    }
+    
+    .side-menu a:hover {
+        background-color: var(--secondary);
+    }
+    
+    .side-menu .close-btn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+        color: white;
+        cursor: pointer;
+    }
+    
+    /* Profile Icon Styles */
+    .profile-icon {
+        width: 40px;
+        height: 40px;
+        background-color: var(--secondary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        
+        <div id="sideMenu" class="side-menu">
+            <span class="close-btn" onclick="toggleMenu()">&times;</span>
+            <a href="#" >Home</a>
+            <a href="dashboard.html" >Dashboard</a>
+            <a href="#" >Patients</a>
+            <a href="#" >Prescriptions</a>
+            <a href="#" >Reports</a>
+            <a href="#" >Logout</a></li>
+        </div>
+        <nav class="navbar">
+            <h1>MediScript</h1>
+            <div>
+                <a href="login.html"><div class="profile-icon">D</div></a>
+            </div>
+        </nav>
+    
+      <div class="container">
+        <div class="dashboard-grid">
+          <div class="stats-card">
+            <h3>Active Patients</h3>
+            <div class="stats-number">24</div>
+          </div>
+          <div class="stats-card">
+            <h3>Pending Dispensations</h3>
+            <div class="stats-number">12</div>
+          </div>
+          <div class="stats-card">
+            <h3>Flagged Issues</h3>
+            <div class="stats-number">3</div>
+          </div>
+        </div>
+    
+        <div class="tab-container">
+          <div class="tab-buttons">
+            <button class="tab-button active" onclick="switchTab('activity')">Recent Activity</button>
+            <button class="tab-button" onclick="switchTab('prescriptions')">Prescription</button>
+            <button class="tab-button" onclick="switchTab('analytics')">Analytics</button>
+          </div>
+    
+          <div id="activity" class="tab-content card active">
+            <h2>Dispenser Activity Log</h2>
+            <div class="activity-log">
+              <div class="log-item">
+                <svg class="log-icon" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <div>
+                  <strong>Azaria</strong> - Medication taken
+                  <small>2 minutes ago</small>
+                </div>
+              </div>
+              <div class="log-item">
+                <svg class="log-icon" style="fill: var(--danger)" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                <div>
+                  <strong>Maedot</strong> - Missed dose
+                  <small>15 minutes ago</small>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div id="prescriptions" class="tab-content card", id="prescription_part">
+            <h2>Prescribe Schedule</h2>
+            <form id="prescriptionForm" onsubmit="handlePrescription(event)">
+                <div class="form-group">
+                    <label for="patientName">Patient Name</label>
+                    <input type="text" id="patientName" placeholder="Enter Patient Name" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="medication">Medication</label>
+                    <select id="medication" required>
+         <option value="">Select Medication</option>
+                      <option value="amoxicillin">Amoxicillin</option>
+                      <option value="atorvastatin">Atorvastatin</option>
+                      <option value="albuterol">Albuterol</option>
+                      <option value="lisinopril">Lisinopril</option>
+                      <option value="omeprazole">Omeprazole</option>
+                      <option value="metformin">Metformin</option>
+                      <option value="amlodipine">Amlodipine</option>
+                      <option value="simvastatin">Simvastatin</option>
+                      <option value="hydrochlorothiazide">Hydrochlorothiazide</option>
+                      <option value="losartan">Losartan</option>
+                      <option value="gabapentin">Gabapentin</option>
+                      <option value="sertraline">Sertraline</option>
+                      <option value="furosemide">Furosemide</option>
+                      <option value="pantoprazole">Pantoprazole</option>
+                      <option value="prednisone">Prednisone</option>
+                      <option value="escitalopram">Escitalopram</option>
+                      <option value="montelukast">Montelukast</option>
+                      <option value="rosuvastatin">Rosuvastatin</option>
+                      <option value="metoprolol">Metoprolol</option>
+                      <option value="ibuprofen">Ibuprofen</option>
+                      <option value="clopidogrel">Clopidogrel</option>
+                      <option value="meloxicam">Meloxicam</option>
+                      <option value="azithromycin">Azithromycin</option>
+                      <option value="tramadol">Tramadol</option>
+                      <option value="warfarin">Warfarin</option>
+                      <option value="cyclobenzaprine">Cyclobenzaprine</option>
+                      <option value="duloxetine">Duloxetine</option>
+                      <option value="allopurinol">Allopurinol</option>
+                      <option value="bupropion">Bupropion</option>
+                      <option value="cephalexin">Cephalexin</option>
+                      <option value="ciprofloxacin">Ciprofloxacin</option>
+                      <option value="pravastatin">Pravastatin</option>
+                      <option value="doxycycline">Doxycycline</option>
+                      <option value="acetaminophen">Acetaminophen</option>
+                      <option value="fluoxetine">Fluoxetine</option>
+                      <option value="lorazepam">Lorazepam</option>
+                      <option value="clonazepam">Clonazepam</option>
+                      <option value="tamsulosin">Tamsulosin</option>
+                      <option value="ranitidine">Ranitidine</option>
+                      <option value="levothyroxine">Levothyroxine</option>
+                      <option value="topiramate">Topiramate</option>
+                      <option value="oxycodone">Oxycodone</option>
+                      <option value="atenolol">Atenolol</option>
+                      <option value="venlafaxine">Venlafaxine</option>
+                      <option value="benzonatate">Benzonatate</option>
+                      <option value="sulfamethoxazole-trimethoprim">Sulfamethoxazole-Trimethoprim</option>
+                      <option value="metronidazole">Metronidazole</option>
+                      <option value="clindamycin">Clindamycin</option>
+                      <option value="spironolactone">Spironolactone</option>
+                      <option value="glipizide">Glipizide</option>
+                      <option value="propranolol">Propranolol</option>
+        
+                    </select>
+                </div>
+        
+                <div class="form-group">
+                    <label for="dosage">Dosage (mg)</label>
+                    <input type="number" id="dosage" required min="1" max="1000" placeholder="Enter dosage">
+                </div>
+        
+                <div class="form-group">
+                    <label for="frequency">Daily Frequency</label>
+                    <select id="frequency" required>
+                        <option value="1">Once daily</option>
+                        <option value="2">Twice daily</option>
+                        <option value="3">Three times daily</option>
+                        <option value="4">Four times daily</option>
+                    </select>
+                </div>
+        
+                <div class="form-group">
+                    <label>Meal Timing</label>
+                    <select id="mealTiming" required>
+                        <option value="">Select Meal Timing</option>
+                        <option value="before">Before Meal</option>
+                        <option value="after">After Meal</option>
+                        <option value="either">Either Before or After Meal</option>
+                    </select>
+                </div>
+        
+                <div class="form-group">
+                    <label>Dose Times</label>
+                    <div id="doseTimeInputs">
+                        <input type="time" class="dose-time" required>
+                    </div>
+                </div>
+        
+                <div class="form-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate" required>
+                </div>
+        
+                <div class="form-group">
+                    <label for="endDate">End Date (Optional)</label>
+                    <input type="date" id="endDate">
+                </div>
+        
+                <div class="form-group">
+                    <label for="additionalInstructions">Additional Instructions</label>
+                    <textarea id="additionalInstructions" placeholder="Any special instructions for the patient"></textarea>
+                </div>
+        
+                <button type="submit">Prescribe</button>
+            </form>
+        
+        </div>
+          <div id="analytics" class="tab-content card">
+            <h2>Adherence Analytics</h2>
+            <div class="form-group">
+              <label for="analyticsPatient">Select Patient</label>
+              <select id="analyticsPatient" onchange="updateAnalytics()">
+                <option value="">Choose a patient</option>
+                <option value="">Select Patient</option>
+                  <option value="1">Abraham</option>
+                  <option value="2">Aschalew</option>
+                  <option value="3">Ashenafi</option>
+                  <option value="4">Azaria</option>
+                  <option value="5">Bekam</option>
+                  <option value="6">Biruk</option>
+                  <option value="7">Eniyew</option>
+                  <option value="8">Habtamu</option>
+                  <option value="9">Maedot</option>
+                  <option value="10">Nasfai</option>
+                  <option value="11">Tabor</option>
+              </select>
+            </div>
+            
+            <div id="analyticsContent" style="display: none;">
+              <h3>Medication Adherence</h3>
+              <div class="dashboard-grid">
+                <div class="stats-card">
+                  <h3>Overall Adherence Rate</h3>
+                  <div class="stats-number" id="overallCompliance">--</div>
+                </div>
+                <div class="stats-card">
+                  <h3>Doses Taken</h3>
+                  <div class="stats-number" id="monthlyDoses">--</div>
+                </div>
+                <div class="stats-card">
+                  <h3>Missed Doses</h3>
+                  <div class="stats-number" id="missedDoses">--</div>
+                </div>
+              </div>
+              <canvas id="complianceChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div id="addPatientModal" class="modal">
+        <div class="modal-content">
+          <h2>Add New Patient</h2>
+          <form id="newPatientForm" onsubmit="handleNewPatient(event)">
+            <div class="form-group">
+              <label for="patientName">Full Name</label>
+              <input type="text" id="patientName" required>
+            </div>
+            <div class="form-group">
+              <label for="patientAge">Age</label>
+              <input type="number" id="patientAge" required>
+            </div>
+            <div class="form-group">
+              <label for="patientId">Medical ID</label>
+              <input type="text" id="patientId" required>
+            </div>
+            <div class="form-group">
+              <label for="initialMedication">Initial Medication</label>
+              <select id="initialMedication" required>
+                <option value="">Select Medication</option>
+                <option value="amoxicillin">Amoxicillin</option>
+                <option value="lisinopril">Lisinopril</option>
+                <option value="metformin">Metformin</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="schedule">Schedule</label>
+              <div class="schedule-grid">
+                <div class="schedule-day">Mon</div>
+                <div class="schedule-day">Tue</div>
+                <div class="schedule-day">Wed</div>
+                <div class="schedule-day">Thu</div>
+                <div class="schedule-day">Fri</div>
+                <div class="schedule-day">Sat</div>
+                <div class="schedule-day">Sun</div>
+              </div>
+              <input type="time" id="scheduleTime" multiple required>
+            </div>
+            <button type="submit">Add Patient</button>
+            <button type="button" onclick="closeModal('addPatientModal')">Cancel</button>
+          </form>
+        </div>
+      </div>
+    
+    <script>
+    const prescriptions = [];
+    
+    function handlePrescription(event) {
+        event.preventDefault();
+        
+        const doseTimes = Array.from(document.getElementsByClassName('dose-time'))
+            .map(input => input.value);
+            
+        const prescription = {
+            id: Date.now(),
+            patientName: document.getElementById('patientName').value,
+            medication: document.getElementById('medication').value,
+            dosage: document.getElementById('dosage').value,
+            frequency: document.getElementById('frequency').value,
+            mealTiming: document.getElementById('mealTiming').value,
+            doseTimes: doseTimes,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value || 'Not specified',
+            additionalInstructions: document.getElementById('additionalInstructions').value || 'None',
+            date: new Date().toLocaleDateString()
+        };
+    
+        prescriptions.unshift(prescription);
+        updatePrescriptionsList();
+        event.target.reset();
+        updateDoseTimeInputs();
+    }
+    
+    function updatePrescriptionsList() {
+        const list = document.getElementById('prescriptionsList');
+        list.innerHTML = prescriptions.map(p => `
+            <div class="card">
+                <p><strong>Patient:</strong> ${p.patientName}</p>
+                <p><strong>Medication:</strong> ${p.medication}</p>
+                <p><strong>Dosage:</strong> ${p.dosage} mg</p>
+                <p><strong>Frequency:</strong> ${p.frequency}x daily</p>
+                <p><strong>Meal Timing:</strong> ${p.mealTiming}</p>
+                <p><strong>Dose Times:</strong> ${p.doseTimes.join(', ')}</p>
+                <p><strong>Start Date:</strong> ${p.startDate}</p>
+                <p><strong>End Date:</strong> ${p.endDate}</p>
+                <p><strong>Instructions:</strong> ${p.additionalInstructions}</p>
+                <p><strong>Prescribed On:</strong> ${p.date}</p>
+            </div>
+        `).join('');
+    }
+    
+    
+    function updateDoseTimeInputs() {
+      const frequency = document.getElementById('frequency').value;
+      const doseTimeInputs = document.getElementById('doseTimeInputs');
+      doseTimeInputs.innerHTML = '';
+      
+      for(let i = 0; i < frequency; i++) {
+        const input = document.createElement('input');
+        input.type = 'time';
+        input.className = 'dose-time';
+        input.required = true;
+        doseTimeInputs.appendChild(input);
+      }
+    }
+    
+    document.getElementById('frequency').addEventListener('change', updateDoseTimeInputs);
+    
+    function showSuccessMessage() {
+      const message = document.getElementById('successMessage');
+      message.style.display = 'block';
+      setTimeout(() => {
+        message.style.display = 'none';
+      }, 3000);
+    }
+    
+    function logout() {
+      if(confirm('Are you sure you want to logout?')) {
+        alert('Logged out successfully');
+      }
+    }
+    
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    
+      if(tabId === 'analytics') {
+        document.getElementById('analyticsPatient').value = '';
+        document.getElementById('analyticsContent').style.display = 'none';
+      }
+    }
+    
+    function updateAnalytics() {
+      const patientId = document.getElementById('analyticsPatient').value;
+      const analyticsContent = document.getElementById('analyticsContent');
+      
+      if (!patientId) {
+        analyticsContent.style.display = 'none';
+        return;
+      }
+      
+      analyticsContent.style.display = 'block';
+      
+      const stats = {
+        1: {
+          dispenserStats: {
+            totalDoses: 60,
+            dosesTaken: 58,
+            dosesMissed: 2,
+            adherenceRate: 96.7,
+            lastWeekAdherence: [100, 100, 85.7, 100, 100, 100, 100]
+          }
+        },
+        2: {
+          dispenserStats: {
+            totalDoses: 60,
+            dosesTaken: 55,
+            dosesMissed: 5,
+            adherenceRate: 91.7,
+            lastWeekAdherence: [90, 92, 85, 80, 95, 100, 100]
+          }
+        }
+      };
+      
+      const patientStats = stats[patientId].dispenserStats;
+      
+      document.getElementById('overallCompliance').textContent = `${patientStats.adherenceRate}%`;
+      document.getElementById('monthlyDoses').textContent = `${patientStats.dosesTaken}/${patientStats.totalDoses}`;
+      document.getElementById('missedDoses').textContent = patientStats.dosesMissed;
+      
+      updateDispenserChart(patientStats.lastWeekAdherence);
+    }
+    
+    function updateDispenserChart(weeklyData) {
+      const ctx = document.getElementById('complianceChart').getContext('2d');
+      
+      if (window.complianceChart) {
+        window.complianceChart.destroy();
+      }
+      
+      window.complianceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'Daily Medication Adherence (%)',
+            data: weeklyData,
+            backgroundColor: '#3498db'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100
+            }
+          }
+        }
+      });
+    }
+    
+    function toggleMenu() {
+            const sideMenu = document.getElementById('sideMenu');
+            if (sideMenu.style.width === '250px') {
+                sideMenu.style.width = '0';
+            } else {
+                sideMenu.style.width = '250px';
+            }
+        }
+    
+        function navigateToDashboard() {
+            // Implement dashboard navigation logic
+            alert('Navigating to Dashboard');
+            toggleMenu();
+        }
+    
+        function openAddPatientModal() {
+            // Open the existing add patient modal
+            document.getElementById('addPatientModal').classList.add('active');
+            toggleMenu();
+        }
+    
+        function showProfileOptions() {
+            // Implement profile options or redirect
+            alert('Profile options');
+        }
+        
+    </script>
+    
+    </body></html>
